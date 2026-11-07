@@ -2,11 +2,15 @@
 
 How [slkracademy.com](https://slkracademy.com) is put together, and why the free tiers are enough while the audience is still small. Limits below are from Cloudflare and Supabase’s published plans as of November 2026.
 
-## The product
+## What it is
 
-SLKR Academy is an original HTML5 learning suite from SLKR Entertainment LLC, for Kindergarten through Grade 5. A learner picks a grade and practices reading, math, science, or thinking in the browser. Keyboard and touch both work, so the same session runs on a computer, a tablet, or a phone. There is nothing to download.
+SLKR Academy is a learning suite for children in Kindergarten through Grade 5, run by SLKR Entertainment LLC. One subscription, $9.99 a month, covers reading, math, science, and thinking. A learner picks a grade, then plays in the browser on a computer, tablet, or phone. There is nothing to download.
 
-Each session generates a new question. A wrong answer opens a tutor that walks the solution. Practice time and those help steps are saved to the account. The subscription is $9.99 a month through Stripe.
+Each session generates a new question. A wrong answer opens a tutor that walks the solution. Practice time and those help steps are saved to the account.
+
+![SLKR Academy homepage, with grade choices and featured games](images/slkr-academy.png)
+
+The screenshot is the live homepage at [slkracademy.com](https://slkracademy.com), taken November 7, 2026. It shows the grade picker (Kindergarten through Grade 5) and the featured games for the selected grade.
 
 The live split is already stated on the site: Cloudflare hosts the app, Supabase holds accounts, and Stripe handles billing. Support is slkrentertainmentllc@aol.com.
 
