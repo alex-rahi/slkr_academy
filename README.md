@@ -8,7 +8,7 @@ SLKR Academy is a learning suite for children in Kindergarten through Grade 5, r
 
 It is cross-platform. The same app runs in the browser on desktop, tablet, and phone. Keyboard and touch both work. There is nothing to download, and there is no separate app for each device.
 
-Each session generates a new question. A wrong answer opens a tutor that walks the solution. Practice time and those help steps are saved to the account.
+Each session generates a new question. A wrong answer opens a tutor that walks the solution. Practice time and those help steps are saved to the account. Progress is tracked and summarized on the dashboard page.
 
 ![SLKR Academy homepage, with grade choices and featured games](images/slkr-academy.png)
 
@@ -20,7 +20,7 @@ Pages in production: Home, Browse, Dashboard, Account, Parents, About, Privacy, 
 
 ## Architecture
 
-A learner opens the live site on a desktop, tablet, or phone. Cloudflare Workers serves the same app to all three. The games run in the browser. Sign-in, accounts, and saved practice go to Supabase. Stripe charges the $9.99 monthly plan. GoDaddy is the later server, drawn as a dashed path because it is not in the production path.
+A learner opens the live site on a desktop, tablet, or phone. Cloudflare Workers serves the same app to all three. The games run in the browser. Sign-in, accounts, and saved practice go to Supabase. Progress is tracked there and summarized on the dashboard page. Stripe charges the $9.99 monthly plan. GoDaddy is the later server, drawn as a dashed path because it is not in the production path.
 
 ```mermaid
 flowchart TB
@@ -29,6 +29,7 @@ flowchart TB
   games["Games in the browser\nK–5 reading, math, science, thinking"]
   accounts["Supabase Auth\naccounts and sign-in\n50,000 monthly active users"]
   data["Supabase Postgres\npractice time and help steps\n500 MB"]
+  dashboard["Dashboard page\nprogress tracked and summarized"]
   billing["Stripe\n$9.99 a month"]
   later["GoDaddy\nlater always-on server"]
 
@@ -36,6 +37,7 @@ flowchart TB
   site --> games
   site --> accounts
   site --> data
+  data --> dashboard
   site --> billing
   site -.-> later
 ```
@@ -69,7 +71,7 @@ If the only problem is the daily cap, Cloudflare’s Workers paid plan is the ne
 
 ## Supabase
 
-Supabase is the data layer: Postgres for saved practice, plus accounts and auth. Dashboard, account, practice time, and help steps belong here. Stripe stays the billing system.
+Supabase is the data layer: Postgres for saved practice, plus accounts and auth. Practice time and help steps are stored here, and progress is tracked and summarized on the dashboard page. Stripe stays the billing system.
 
 On the free plan, auth includes **50,000 monthly active users**. An active user is someone who signs in or refreshes a session during that billing month. A family that subscribed in September and does not open the app in November does not count for November. Accounts can exist beyond 50,000. The free quota is how many of them show up in a month.
 
