@@ -1,10 +1,12 @@
 # SLKR Academy architecture
 
-How [slkracademy.com](https://slkracademy.com) is put together, and why the free tiers are enough while the audience is still small. Limits below are from Cloudflare and Supabase’s published plans as of November 2026.
+How [slkracademy.com](https://slkracademy.com) is put together, and why the free tiers are enough while the audience is still small. The site is live in production. Limits below are from Cloudflare and Supabase’s published plans as of November 2026.
 
 ## What it is
 
-SLKR Academy is a learning suite for children in Kindergarten through Grade 5, run by SLKR Entertainment LLC. One subscription, $9.99 a month, covers reading, math, science, and thinking. A learner picks a grade, then plays in the browser on a computer, tablet, or phone. There is nothing to download.
+SLKR Academy is a learning suite for children in Kindergarten through Grade 5, run by SLKR Entertainment LLC. It is live in production at [slkracademy.com](https://slkracademy.com). One subscription, $9.99 a month, covers reading, math, science, and thinking.
+
+It is cross-platform. The same app runs in the browser on desktop, tablet, and phone. Keyboard and touch both work. There is nothing to download, and there is no separate app for each device.
 
 Each session generates a new question. A wrong answer opens a tutor that walks the solution. Practice time and those help steps are saved to the account.
 
@@ -18,12 +20,12 @@ Pages in production: Home, Browse, Dashboard, Account, Parents, About, Privacy, 
 
 ## Architecture
 
-A learner opens the site. Cloudflare Workers serves it. The games run in the browser. Sign-in, accounts, and saved practice go to Supabase. Stripe charges the $9.99 monthly plan. GoDaddy is the later server, drawn as a dashed path because it is not in production.
+A learner opens the live site on a desktop, tablet, or phone. Cloudflare Workers serves the same app to all three. The games run in the browser. Sign-in, accounts, and saved practice go to Supabase. Stripe charges the $9.99 monthly plan. GoDaddy is the later server, drawn as a dashed path because it is not in the production path.
 
 ```mermaid
 flowchart TB
-  learner["Learner\ndesktop, tablet, or phone"]
-  site["slkracademy.com\nCloudflare Workers\n100,000 requests a day"]
+  learner["Learner\ndesktop, tablet, or phone\nsame app"]
+  site["slkracademy.com\nCloudflare Workers\nlive in production\n100,000 requests a day"]
   games["Games in the browser\nK–5 reading, math, science, thinking"]
   accounts["Supabase Auth\naccounts and sign-in\n50,000 monthly active users"]
   data["Supabase Postgres\npractice time and help steps\n500 MB"]
