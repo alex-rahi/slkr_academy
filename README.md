@@ -1,0 +1,93 @@
+# SLKR Academy architecture
+
+How [slkracademy.com](https://slkracademy.com) is put together, and why the free tiers are enough while the audience is still small. Limits below are from Cloudflare and Supabase’s published plans as of November 2026.
+
+## The product
+
+SLKR Academy is an original HTML5 learning suite from SLKR Entertainment LLC, for Kindergarten through Grade 5. A learner picks a grade and practices reading, math, science, or thinking in the browser. Keyboard and touch both work, so the same session runs on a computer, a tablet, or a phone. There is nothing to download.
+
+Each session generates a new question. A wrong answer opens a tutor that walks the solution. Practice time and those help steps are saved to the account. The subscription is $9.99 a month through Stripe.
+
+The live split is already stated on the site: Cloudflare hosts the app, Supabase holds accounts, and Stripe handles billing. Support is slkrentertainmentllc@aol.com.
+
+Pages in production: Home, Browse, Dashboard, Account, Parents, About, Privacy, and Terms.
+
+## Architecture
+
+A learner opens the site. Cloudflare Workers serves it. The games run in the browser. Sign-in, accounts, and saved practice go to Supabase. Stripe charges the $9.99 monthly plan. GoDaddy is the later server, drawn as a dashed path because it is not in production.
+
+```mermaid
+flowchart TB
+  learner["Learner\ndesktop, tablet, or phone"]
+  site["slkracademy.com\nCloudflare Workers\n100,000 requests a day"]
+  games["Games in the browser\nK–5 reading, math, science, thinking"]
+  accounts["Supabase Auth\naccounts and sign-in\n50,000 monthly active users"]
+  data["Supabase Postgres\npractice time and help steps\n500 MB"]
+  billing["Stripe\n$9.99 a month"]
+  later["GoDaddy\nlater always-on server"]
+
+  learner --> site
+  site --> games
+  site --> accounts
+  site --> data
+  site --> billing
+  site -.-> later
+```
+
+Static files (HTML, scripts, and artwork) are served by Workers and do not count toward the daily request cap. What counts is work the Worker runs: account calls, saving a session, and anything else that executes on the server.
+
+## Cloudflare Workers free tier
+
+The free plan includes **100,000 requests per day**, shared by every Worker on the account. The counter resets at midnight UTC. Past that, Cloudflare returns error 1027.
+
+That allowance fits a small application. A few hundred families after school, or a handful of classrooms trying the product, stay well under 100,000 Worker requests a day when the games themselves are static files. The daily cap is the signal that the audience has grown past this plan.
+
+Two other free-plan limits sit beside the request cap:
+
+- **10 milliseconds of CPU** per request. Enough for a thin handler that reads or writes an account. Tight if question generation or the tutor moves into the Worker.
+- **128 MB** of memory, **50 subrequests** per invocation, and up to **100 Workers** on the account.
+
+The app is already on Cloudflare, deploys to their network, and costs nothing while the subscriber list is short. A real school rollout, or a heavy in-Worker tutor, is what would trip the free plan.
+
+Published limits: [Cloudflare Workers limits](https://developers.cloudflare.com/workers/platform/limits/) and [pricing](https://developers.cloudflare.com/workers/platform/pricing/).
+
+## GoDaddy for long-term scaling
+
+GoDaddy is the host to use once the free Worker cap, or the 10 ms CPU cap, is no longer enough and the product needs a normal always-on server.
+
+GoDaddy’s ladder is shared web hosting, then a VPS, then a dedicated server. Shared hosting can serve this HTML5 site and a small backend. A VPS is the step that scales it: your own CPU and memory, room for the app process, and a plan you upgrade as traffic grows. The bill becomes a monthly server, in place of a daily request counter.
+
+That move is a platform change, so it waits until the audience is real. The domain can stay wherever it is registered. Email and the Stripe subscription stay as they are. What changes is where the app runs: a GoDaddy server you control, sized up when classrooms and families outgrow 100,000 Worker requests a day.
+
+If the only problem is the daily cap, Cloudflare’s Workers paid plan is the nearer step: $5 a month, 10 million requests a month included, then $0.30 per extra million, and a much higher CPU ceiling. GoDaddy is the longer-term choice when the goal is a conventional server.
+
+## Supabase
+
+Supabase is the data layer: Postgres for saved practice, plus accounts and auth. Dashboard, account, practice time, and help steps belong here. Stripe stays the billing system.
+
+On the free plan, auth includes **50,000 monthly active users**. An active user is someone who signs in or refreshes a session during that billing month. A family that subscribed in September and does not open the app in November does not count for November. Accounts can exist beyond 50,000. The free quota is how many of them show up in a month.
+
+50,000 active learners in a month is far past a small launch. At $9.99 each, that is a real business, and the auth line on the free plan still covers it.
+
+The limits that will matter sooner:
+
+| Free plan | Included |
+| --- | --- |
+| Monthly active users | 50,000 |
+| Database | 500 MB Postgres, shared CPU, 500 MB RAM |
+| File storage | 1 GB |
+| Egress | 5 GB, plus 5 GB cached |
+| Active projects | 2 |
+| Idle projects | Paused after 1 week with no activity |
+
+Practice rows are small, so 500 MB holds a lot of sessions. It is still the number to watch, because every saved attempt and help step lands in that database. Egress is the other one if the client pulls large reads on every game. A quiet week in production would pause the free project until someone wakes it.
+
+Pro starts at $25 a month, raises the included auth quota to 100,000 monthly active users, and stops pausing the project for inactivity. That is the upgrade when the database, egress, or the pause gets in the way. The 50,000-user auth allowance can stay free well past the point where the database needs a paid plan.
+
+Published plans: [Supabase pricing](https://supabase.com/pricing).
+
+## How the free tiers fit
+
+Cloudflare serves the academy. Supabase remembers who the learner is and what they practiced. Stripe charges $9.99 a month.
+
+While the audience is families and a few classrooms, both free tiers cover the product. Workers’ 100,000 requests a day cover the traffic. Supabase’s 50,000 monthly active users cover the accounts, with 500 MB of database as the earlier ceiling. GoDaddy is the long-term server for when that daily Worker allowance, or the need for a normal host, outgrows the free plan.
