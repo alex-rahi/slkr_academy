@@ -66,6 +66,4 @@ EKS is Amazon’s Kubernetes service. The learner would still use the browser, a
 | Database and accounts | Supabase, already in place | Often moved to AWS as well |
 | Long jobs | Short CPU budget per request | Pods can run longer work |
 
-For long-term scaling, stay on Workers and Supabase. The games already run in the browser, so growth is more requests and more saved practice. The paid Workers plan and Supabase Pro cover that.
-
-EKS fits later, if the tutor cannot finish inside a Worker or the academy becomes several always-on services. Until then a cluster costs more to run than the traffic needs. GoDaddy is the single-server option. EKS is the cluster option. Paid Workers plus Supabase is the step that matches the app already in production.
+For long-term scaling, migrate to GoDaddy and Supabase. EKS fits later, if the tutor cannot finish inside a Worker or the academy becomes several always-on services. Until then a cluster costs more to run than traffic needs. 
