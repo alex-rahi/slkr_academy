@@ -4,7 +4,7 @@ How [slkracademy.com](https://slkracademy.com) is hosted. It is live in producti
 
 ## What it is
 
-SLKR Academy is a learning suite for children in Kindergarten through Grade 5, run by SLKR Entertainment LLC. It is live in production at [slkracademy.com](https://slkracademy.com). One subscription covers reading, math, science, and thinking.
+SLKR Academy is a learning suite for children in Kindergarten through Grade 5, run by SLKR Entertainment LLC. It is live in production at [https://slkracademy.com](https://slkracademy.com). One subscription covers reading, math, science, and thinking.
 
 It is cross-platform. The same app runs in the browser on desktop, tablet, and phone. Keyboard and touch both work. There is nothing to download, and there is no separate app for each device.
 
